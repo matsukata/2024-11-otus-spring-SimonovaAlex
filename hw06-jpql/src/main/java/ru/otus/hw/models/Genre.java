@@ -22,9 +22,11 @@ import java.io.Serializable;
 @ToString
 @Entity
 public class Genre implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "name")
     private String name;
 }
