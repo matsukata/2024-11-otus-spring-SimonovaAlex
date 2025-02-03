@@ -8,23 +8,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "genres")
 @ToString
+@Getter
+@Setter
 @Entity
 public class Genre implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "name")

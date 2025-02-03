@@ -10,7 +10,6 @@ import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -34,13 +33,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book insert(String title, long authorId, Set<Long> genresIds) {
-        return save(0, title, authorId, genresIds);
+    public Book insert(String title, long authorId, List<Long> genresIds) {
+        return save(title, authorId, genresIds);
     }
 
     @Override
-    public Book update(long id, String title, long authorId, Set<Long> genresIds) {
-        return save(id, title, authorId, genresIds);
+    public Book update(long id, String title, long authorId, List<Long> genresIds) {
+        var genres = genreRepository.findAllByIds(genresIds);
+        var author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));
+        return bookRepository.update(id, title, author, genres);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
-    private Book save(long id, String title, long authorId, Set<Long> genresIds) {
+    private Book save(String title, long authorId, List<Long> genresIds) {
         var genres = genreRepository.findAllByIds(genresIds);
         var author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));

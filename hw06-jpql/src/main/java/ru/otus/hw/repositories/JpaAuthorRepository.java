@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @Repository
 public class JpaAuthorRepository implements AuthorRepository {
-    private static final int LIST_SIZE = 1;
-
 
     @PersistenceContext
     private final EntityManager em;

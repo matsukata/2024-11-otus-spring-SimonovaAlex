@@ -11,26 +11,34 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "books")
 @ToString
+@Getter
+@Setter
 @Entity
+@NamedEntityGraph(name = "authors_genres_graph", attributeNodes = {@NamedAttributeNode("author"),
+        @NamedAttributeNode("genres")})
+@NamedEntityGraph(name = "authors_graph", attributeNodes = {@NamedAttributeNode("author")})
 public class Book implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "title")
@@ -40,9 +48,8 @@ public class Book implements Serializable {
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private Author author;
 
-    // Указывает на связь между таблицами "многие ко многим"
+    @BatchSize(size = 5)
     @ManyToMany(fetch = FetchType.LAZY)
-    // Задает таблицу связей между таблицами для хранения родительской и связанной сущностью
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;

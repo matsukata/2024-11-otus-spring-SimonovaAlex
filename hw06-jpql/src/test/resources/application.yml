@@ -8,4 +8,5 @@ spring:
       schema-locations: schema.sql
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+spring.shell.interactive.enabled: false

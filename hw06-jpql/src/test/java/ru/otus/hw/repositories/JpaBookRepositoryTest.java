@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Author;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
+import ru.otus.hw.services.BookServiceImpl;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -20,10 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jdbc для работы с книгами ")
 @DataJpaTest
-@Import({JpaBookRepository.class, JpaGenreRepository.class})
+@Import({JpaBookRepository.class, JpaGenreRepository.class, BookServiceImpl.class, JpaAuthorRepository.class})
 class JpaBookRepositoryTest {
     @Autowired
     private JpaBookRepository repositoryJpa;
+    @Autowired
+    private BookServiceImpl service;
 
     @Autowired
     private TestEntityManager em;
@@ -44,7 +47,7 @@ class JpaBookRepositoryTest {
     @ParameterizedTest
     @MethodSource("getDbBooks")
     void shouldReturnCorrectBookById(Book expectedBook) {
-        var actualBook = repositoryJpa.findById(expectedBook.getId());
+        var actualBook = service.findById(expectedBook.getId());
         Book book = em.find(Book.class, expectedBook.getId());
         assertThat(actualBook).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(book);
@@ -54,7 +57,7 @@ class JpaBookRepositoryTest {
     @DisplayName("должен загружать список всех книг")
     @Test
     void shouldReturnCorrectBooksList() {
-        var actualBooks = repositoryJpa.findAll();
+        var actualBooks = service.findAll();
         var expectedBooks = dbBooks;
         assertThat(actualBooks).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBooks);
         actualBooks.forEach(System.out::println);
@@ -65,7 +68,8 @@ class JpaBookRepositoryTest {
     void shouldSaveNewBook() {
         var expectedBook = Book.builder().title("BookTitle_10501").author(dbAuthors.get(0))
                 .genres(List.of(dbGenres.get(0), dbGenres.get(2))).build();
-        Book returnedBook = repositoryJpa.save(expectedBook);
+        Book returnedBook = service.insert("BookTitle_10501", dbAuthors.get(0).getId(),
+                List.of(dbGenres.get(0).getId(), dbGenres.get(2).getId()));
         assertThat(returnedBook).isNotNull()
                 .matches(book -> book.getId() > 0)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
@@ -87,7 +91,8 @@ class JpaBookRepositoryTest {
                 .get()
                 .isNotEqualTo(expectedBook);
 
-        var returnedBook = repositoryJpa.save(expectedBook);
+        var returnedBook = service.update(1L, "BookTitle_10500", dbAuthors.get(2).getId(),
+                List.of(dbGenres.get(4).getId(), dbGenres.get(5).getId()));
 
         assertThat(returnedBook).isNotNull()
                 .matches(book -> book.getId() > 0)
