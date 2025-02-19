@@ -38,7 +38,7 @@ import java.util.List;
 @NamedEntityGraph(name = "authors_graph", attributeNodes = {@NamedAttributeNode("author")})
 public class Book implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "title")

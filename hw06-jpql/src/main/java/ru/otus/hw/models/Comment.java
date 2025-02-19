@@ -3,6 +3,7 @@ package ru.otus.hw.models;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +39,7 @@ public class Comment implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    @ManyToOne(targetEntity = Book.class, cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = Book.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book book;
 }

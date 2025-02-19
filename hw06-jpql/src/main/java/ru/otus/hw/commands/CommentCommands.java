@@ -2,7 +2,6 @@ package ru.otus.hw.commands;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jsoniter.output.JsonStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
@@ -14,7 +13,6 @@ import ru.otus.hw.models.Comment;
 import ru.otus.hw.services.CommentService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @ShellComponent

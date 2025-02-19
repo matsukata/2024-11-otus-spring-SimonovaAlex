@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.hw.models.Book;
 import ru.otus.hw.services.BookService;
 
 import java.util.List;

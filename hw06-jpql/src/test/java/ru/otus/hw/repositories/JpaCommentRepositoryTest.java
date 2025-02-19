@@ -42,7 +42,7 @@ public class JpaCommentRepositoryTest {
         dbGenres = getDbGenres();
         dbBooksIds = getDbBooksIds();
         dbBooks = getDbBooks(dbAuthors, dbGenres);
-        dbComments = getDbComments(dbBooksIds, dbBooks);
+        dbComments = getDbComments(dbBooks);
 
     }
 
@@ -51,7 +51,7 @@ public class JpaCommentRepositoryTest {
     @MethodSource("getDbComments")
     void shouldReturnCorrectCommentById(Comment expected) {
 
-        var actual = repositoryJpa.findById(expected.getId());
+        var actual = repositoryJpa.findById(expected.getId()).get();
         Comment exp = em.find(Comment.class, expected.getId());
         assertThat(actual).usingRecursiveComparison().isEqualTo(exp);
     }
@@ -67,7 +67,7 @@ public class JpaCommentRepositoryTest {
     }
 
 
-    private static List<Comment> getDbComments(List<Long> dbBooksIds, List<Book> dbBooks) {
+    private static List<Comment> getDbComments(List<Book> dbBooks) {
         return IntStream.range(1, 4).boxed()
                 .map(id -> new Comment(id.longValue(), "Comment_" + id, dbBooks.get(id - 1)))
                 .toList();
@@ -79,9 +79,8 @@ public class JpaCommentRepositoryTest {
 
 
     private static List<Comment> getDbComments() {
-        var dbBooksIds = getDbBooksIds();
         var dbBooks = getDbBooks();
-        return getDbComments(dbBooksIds, dbBooks);
+        return getDbComments(dbBooks);
     }
 
     private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {

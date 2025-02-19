@@ -4,7 +4,6 @@ import com.jsoniter.output.JsonStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.hw.models.Genre;
 import ru.otus.hw.services.GenreService;
 
 import java.util.stream.Collectors;
