@@ -1,5 +1,6 @@
 package ru.otus.hw.commands;
 
+import com.jsoniter.output.JsonStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -17,7 +18,7 @@ public class GenreCommands {
     @ShellMethod(value = "Find all genres", key = "ag")
     public String findAllGenres() {
         return genreService.findAll().stream()
-                .map(Genre::toString)
+                .map(JsonStream::serialize)
                 .collect(Collectors.joining("," + System.lineSeparator()));
     }
 }

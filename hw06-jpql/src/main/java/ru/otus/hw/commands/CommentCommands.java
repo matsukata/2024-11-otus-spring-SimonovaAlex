@@ -1,12 +1,19 @@
 package ru.otus.hw.commands;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.jsoniter.output.JsonStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.hw.CommentDto;
+import ru.otus.hw.dto.CommentEntityDto;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.services.CommentService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -18,17 +25,28 @@ public class CommentCommands {
     @Transactional(readOnly = true)
     @ShellMethod(value = "Find comment by id", key = "ccid")
     public String findCommentById(long id) {
-        return service.findById(id)
-                .map(Comment::toString)
-                .orElse("Comment with id %d not found".formatted(id));
+        Comment comment = service.findById(id).get();
+        return JsonStream.serialize(comment);
     }
 
     @Transactional(readOnly = true)
     @ShellMethod(value = "Find comment by book id", key = "cbid")
-    public String findCommentBybookId(long id) {
-        return service.findByBookId(id)
+    public String findCommentByBookId(long id) {
+        List<CommentEntityDto> comments = service.findByBookId(id)
                 .stream()
-                .map(Comment::toString)
-                .collect(Collectors.joining("," + System.lineSeparator()));
+                .toList();
+        CommentDto commentDto = CommentDto.builder().comments(comments).build();
+//        String serialize = JsonStream.serialize(commentDto);
+//        System.out.println("sss " + serialize);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        String serialize;
+        try {
+            serialize = objectMapper.writeValueAsString(commentDto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return serialize;
     }
 }

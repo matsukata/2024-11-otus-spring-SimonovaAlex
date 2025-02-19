@@ -1,10 +1,15 @@
 package ru.otus.hw.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +28,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
+@NamedEntityGraph(name = "book_id_graph", attributeNodes = {@NamedAttributeNode("book")})
 public class Comment implements Serializable {
 
     @Id
@@ -32,6 +38,7 @@ public class Comment implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-    @Column(name = "book_id")
-    private Long bookId;
+    @ManyToOne(targetEntity = Book.class, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
+    private Book book;
 }

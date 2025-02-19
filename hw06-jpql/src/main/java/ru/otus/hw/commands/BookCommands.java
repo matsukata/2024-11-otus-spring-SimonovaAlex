@@ -22,7 +22,7 @@ public class BookCommands {
     @ShellMethod(value = "Find all books", key = "ab")
     public String findAllBooks() {
         return bookService.findAll().stream()
-                .map(Book::toString)
+                .map(JsonStream::serialize)
                 .collect(Collectors.joining("," + System.lineSeparator()));
     }
 
@@ -39,7 +39,7 @@ public class BookCommands {
     @ShellMethod(value = "Insert book", key = "bins")
     public String insertBook(String title, long authorId, List<Long> genresIds) {
         var savedBook = bookService.insert(title, authorId, genresIds);
-        return savedBook.toString();
+        return JsonStream.serialize(savedBook);
     }
 
     // bupd 4 editedBook 3 2,5
@@ -47,7 +47,7 @@ public class BookCommands {
     @ShellMethod(value = "Update book", key = "bupd")
     public String updateBook(long id, String title, long authorId, List<Long> genresIds) {
         var savedBook = bookService.update(id, title, authorId, genresIds);
-        return savedBook.toString();
+        return JsonStream.serialize(savedBook);
     }
 
     // bdel 4
