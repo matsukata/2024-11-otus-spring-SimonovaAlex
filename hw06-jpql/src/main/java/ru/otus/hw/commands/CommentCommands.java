@@ -34,11 +34,8 @@ public class CommentCommands {
                 .stream()
                 .toList();
         CommentDto commentDto = CommentDto.builder().comments(comments).build();
-//        String serialize = JsonStream.serialize(commentDto);
-//        System.out.println("sss " + serialize);
 
         ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         String serialize;
         try {
             serialize = objectMapper.writeValueAsString(commentDto);
@@ -46,5 +43,28 @@ public class CommentCommands {
             throw new RuntimeException(e);
         }
         return serialize;
+    }
+
+    // cins newComment 1 1
+    @Transactional
+    @ShellMethod(value = "Insert comment", key = "cins")
+    public String insertComment(String text, long bookId) {
+        var savedBook = service.insert(text, bookId);
+        return JsonStream.serialize(savedBook);
+    }
+
+    // cupd 1 editedComment 1
+    @Transactional
+    @ShellMethod(value = "Update comment", key = "cupd")
+    public String updateComment(long id, String text, long bookId) {
+        var savedComment = service.update(id, text, bookId);
+        return JsonStream.serialize(savedComment);
+    }
+
+    // cdel 1
+    @Transactional
+    @ShellMethod(value = "Delete comment by id", key = "cdel")
+    public void deleteComment(long id) {
+        service.deleteById(id);
     }
 }

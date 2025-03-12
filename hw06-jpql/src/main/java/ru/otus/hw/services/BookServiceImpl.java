@@ -39,10 +39,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book update(long id, String title, long authorId, List<Long> genresIds) {
+        Book foundBook = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));
         var genres = genreRepository.findAllByIds(genresIds);
         var author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(authorId)));
-        return bookRepository.update(id, title, author, genres);
+        foundBook.setTitle(title);
+        foundBook.setAuthor(author);
+        foundBook.setGenres(genres);
+        return bookRepository.save(foundBook);
     }
 
     @Override

@@ -44,10 +44,12 @@ public class Book implements Serializable {
     @Column(name = "title")
     private String title;
 
+    @ToString.Exclude
     @ManyToOne(targetEntity = Author.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private Author author;
 
+    @ToString.Exclude
     @BatchSize(size = 5)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"),
